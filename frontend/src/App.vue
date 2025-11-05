@@ -1,85 +1,80 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+import CategorySwitcher from './components/CategorySwitcher.vue'
+import KanbanBoard from './components/KanbanBoard.vue'
+import AppFooter from './components/AppFooter.vue'
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+  <div id="app">
+    <header class="app-header">
+      <div class="header-content">
+        <h1 class="app-title">Continuum</h1>
+        <p class="app-subtitle">Personal Productivity Dashboard</p>
+      </div>
+    </header>
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+    <CategorySwitcher />
 
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
+    <main class="app-main">
+      <KanbanBoard />
+    </main>
 
-  <RouterView />
+    <AppFooter />
+  </div>
 </template>
 
 <style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
+#app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100vw;
+  background-color: #f8f9fa;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+.app-header {
+  background: linear-gradient(135deg, #364fc7 0%, #2b3e9e 100%);
+  color: #ffffff;
+  padding: 1.5rem 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
 }
 
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
+.header-content {
+  max-width: 100%;
+  margin: 0 auto;
 }
 
-nav a.router-link-exact-active {
-  color: var(--color-text);
+.app-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 0.25rem 0;
 }
 
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
+.app-subtitle {
+  margin: 0;
+  font-size: 1rem;
+  opacity: 0.9;
+  font-weight: 400;
 }
 
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
+.app-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
+@media (max-width: 768px) {
+  .app-header {
+    padding: 1rem;
   }
 
-  .logo {
-    margin: 0 2rem 0 0;
+  .app-title {
+    font-size: 1.5rem;
   }
 
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
+  .app-subtitle {
+    font-size: 0.875rem;
   }
 }
 </style>
