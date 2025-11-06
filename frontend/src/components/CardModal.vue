@@ -122,7 +122,7 @@ function handleBackdropClick(event: MouseEvent) {
             <label for="card-column">Column</label>
             <select id="card-column" v-model="columnId">
               <option value="todo">To Do</option>
-              <option value="in-progress">In Progress</option>
+              <option value="inProgress">In Progress</option>
               <option value="done">Done</option>
             </select>
           </div>

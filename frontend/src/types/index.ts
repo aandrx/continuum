@@ -3,9 +3,9 @@
  * Core data structures for the kanban board
  */
 
-export type CategoryId = 'business-finance' | 'coding-projects' | 'health-life' | 'communications'
+export type CategoryId = 'business' | 'coding' | 'health' | 'communications'
 
-export type ColumnId = 'todo' | 'in-progress' | 'done'
+export type ColumnId = 'todo' | 'inProgress' | 'done'
 
 export interface Category {
   id: CategoryId
@@ -20,8 +20,8 @@ export interface Card {
   description: string
   categoryId: CategoryId
   columnId: ColumnId
-  createdAt: Date
-  updatedAt: Date
+  createdAt: Date | string
+  updatedAt: Date | string
   tags?: string[]
   priority?: 'low' | 'medium' | 'high'
 }

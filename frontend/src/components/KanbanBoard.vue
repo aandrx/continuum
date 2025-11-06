@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useKanbanStore } from '@/stores/kanban'
 import KanbanColumn from './KanbanColumn.vue'
 import CardModal from './CardModal.vue'
@@ -8,6 +8,12 @@ import type { ColumnId } from '@/types'
 const kanbanStore = useKanbanStore()
 const showModal = ref(false)
 const editingCardId = ref<string | null>(null)
+
+// Initialize data when component mounts
+onMounted(async () => {
+  await kanbanStore.fetchCategories()
+  await kanbanStore.fetchCards()
+})
 
 function handleNewCard() {
   editingCardId.value = null
@@ -39,12 +45,19 @@ function handleCloseModal() {
   <div class="kanban-board">
     <div class="board-header">
       <h1 class="board-title">
-        {{ kanbanStore.categories.find((c) => c.id === kanbanStore.activeCategory)?.name }}
+        {{ kanbanStore.categories.find((c) => c.id === kanbanStore.activeCategory)?.name || 'Loading...' }}
       </h1>
-      <button class="new-card-btn" @click="handleNewCard">+ New Card</button>
+      <button class="new-card-btn" @click="handleNewCard" :disabled="kanbanStore.loading">
+        + New Card
+      </button>
     </div>
 
-    <div class="board-columns">
+    <div v-if="kanbanStore.loading" class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading cards...</p>
+    </div>
+
+    <div v-else class="board-columns">
       <KanbanColumn
         column-id="todo"
         title="To Do"
@@ -55,7 +68,7 @@ function handleCloseModal() {
       />
 
       <KanbanColumn
-        column-id="in-progress"
+        column-id="inProgress"
         title="In Progress"
         :cards="kanbanStore.inProgressCards"
         @move-card="handleMoveCard"
@@ -129,6 +142,35 @@ function handleCloseModal() {
 
 .new-card-btn:active {
   transform: translateY(0);
+}
+
+.new-card-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  color: #6c757d;
+}
+
+.spinner {
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #364fc7;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 .board-columns {
