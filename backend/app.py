@@ -17,9 +17,9 @@ from api.routes import api
 
 app = Flask(__name__)
 
-# Configure CORS
-cors_origins = os.getenv('CORS_ORIGINS', 'http://localhost:5173').split(',')
-CORS(app, origins=cors_origins, supports_credentials=True)
+# Configure CORS - allow production domains
+cors_origins = os.getenv('CORS_ORIGINS', 'http://localhost:5173,https://*.vercel.app,https://*.azurestaticapps.net').split(',')
+CORS(app, origins=cors_origins, supports_credentials=True, resources={r"/api/*": {"origins": cors_origins}})
 
 # Register API blueprint
 app.register_blueprint(api)
@@ -51,9 +51,9 @@ def root():
 
 if __name__ == '__main__':
     host = os.getenv('API_HOST', '0.0.0.0')
-    port = int(os.getenv('API_PORT', 5000))
-    debug = os.getenv('FLASK_DEBUG', 'True') == 'True'
+    port = int(os.getenv('PORT', os.getenv('API_PORT', 5000)))  # Azure uses PORT env var
+    debug = os.getenv('FLASK_ENV', 'development') != 'production'
     
-    print(f"Continuum API starting on {host}:{port}")
+    print(f"Continuum API starting on {host}:{port} (debug={debug})")
     app.run(host=host, port=port, debug=debug)
 
