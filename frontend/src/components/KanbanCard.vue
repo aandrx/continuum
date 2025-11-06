@@ -10,7 +10,7 @@ const emit = defineEmits<{
   delete: [cardId: string]
 }>()
 
-function formatDate(date: Date): string {
+function formatDate(date: string | Date): string {
   return new Date(date).toLocaleDateString('en-US', {
     month: 'short',
     day: 'numeric',
