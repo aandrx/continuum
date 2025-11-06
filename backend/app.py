@@ -37,7 +37,7 @@ with app.app_context():
 def root():
     """Root endpoint with API information."""
     return jsonify({
-        'message': 'Continuum API',
+        'message': 'Continuum API v1.0',
         'version': '0.2.0',
         'status': 'running',
         'endpoints': {
