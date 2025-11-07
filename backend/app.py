@@ -18,8 +18,32 @@ from api.routes import api
 app = Flask(__name__)
 
 # Configure CORS - allow production domains
-cors_origins = os.getenv('CORS_ORIGINS', 'http://localhost:5173,https://*.vercel.app,https://*.azurestaticapps.net').split(',')
-CORS(app, origins=cors_origins, supports_credentials=True, resources={r"/api/*": {"origins": cors_origins}})
+cors_origins_env = os.getenv('CORS_ORIGINS', 'http://localhost:5173')
+if cors_origins_env:
+    # Support both comma-separated list and regex patterns
+    cors_origins = cors_origins_env.split(',')
+else:
+    cors_origins = ['http://localhost:5173']
+
+# Use regex pattern to support Vercel/Azure wildcards
+import re
+def check_origin(origin, allowed_origins):
+    """Check if origin matches allowed patterns including wildcards"""
+    for allowed in allowed_origins:
+        # Convert wildcard pattern to regex
+        if '*' in allowed:
+            pattern = allowed.replace('.', r'\.').replace('*', r'[a-zA-Z0-9-]+')
+            if re.match(f'^{pattern}$', origin):
+                return True
+        elif origin == allowed:
+            return True
+    return False
+
+# Configure CORS with origin checking function
+CORS(app, 
+     origins=lambda origin: check_origin(origin, cors_origins + ['https://*.vercel.app', 'https://*.azurestaticapps.net']),
+     supports_credentials=True, 
+     resources={r"/api/*": {"origins": "*"}})
 
 # Register API blueprint
 app.register_blueprint(api)
